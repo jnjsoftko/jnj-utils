@@ -1,5 +1,5 @@
 import sqlite3 from 'sqlite3';
-import { saveFile } from '../../base';
+import { saveFile } from '../../base/index.js';
 const BATCH_SIZE = 1000;
 
 

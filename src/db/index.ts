@@ -1,4 +1,4 @@
-import { Sqlite } from './sqlite';
+import { Sqlite } from './sqlite/index.js';
 
 export { Sqlite };
 
