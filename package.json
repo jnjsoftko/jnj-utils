@@ -5,23 +5,18 @@
   "author": "Jnj Soft Ko <jnjsoft.ko@gmail.com>",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
+  "types": "./types/index.d.ts",
   "exports": {
     ".": {
       "import": "./esm/index.js",
-      "require": "./cjs/index.js"
-    },
-    "./base": {
-      "import": "./esm/base/index.js",
-      "require": "./cjs/base/index.js"
-    },
-    "./web": {
-      "import": "./esm/web/index.js",
-      "require": "./cjs/web/index.js"
+      "require": "./cjs/index.js",
+      "types": "./types/index.d.ts"
     }
   },
   "scripts": {
-    "build": "npm run build:cjs & npm run build:esm",
-    "build:watch": "concurrently \"npm run build:cjs:watch\" \"npm run build:esm:watch\"",
+    "build": "npm run build:types && npm run build:cjs & npm run build:esm",
+    "build:types": "tsc --emitDeclarationOnly --outDir types",
+    "build:watch": "npm run build:types && concurrently \"npm run build:cjs:watch\" \"npm run build:esm:watch\"",
     "build:cjs": "swc ./src -d cjs --config-file ./cjs/.swcrc  --strip-leading-paths",
     "build:esm": "swc ./src -d esm --config-file ./esm/.swcrc --strip-leading-paths",
     "build:cjs:watch": "swc ./src -d cjs --config-file ./cjs/.swcrc  --strip-leading-paths -w",
