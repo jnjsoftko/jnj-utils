@@ -74,31 +74,88 @@ class Chrome {
   }
 
   async getFullSize() {
-    let fullHeight = 0;
+    let lastHeight = 0;
+    const scrollStep = 800; // 한 번에 스크롤할 픽셀 수
+    let noChangeCount = 0;  // 높이 변화 없음 카운터
+    const maxNoChange = 3;  // 최대 높이 변화 없음 횟수
 
-    // 전체 너비 가져오기
-    const fullWidth = (await this.driver.executeScript(
-      'return document.body.parentNode.scrollWidth'
-    )) as number;
-
-    // 전체 높이 계산을 위한 스크롤
     while (true) {
-      await this.driver.executeScript(
-        'window.scrollTo(0, document.body.scrollHeight)'
-      );
-      await this.driver.sleep(1000);
+      // 현재 viewport 높이와 전체 문서 높이 가져오기
+      const dimensions = await this.driver.executeScript(`
+        return {
+          viewportHeight: window.innerHeight,
+          documentHeight: Math.max(
+            document.documentElement.scrollHeight,
+            document.body.scrollHeight,
+            document.documentElement.offsetHeight,
+            document.body.offsetHeight
+          ),
+          scrollY: window.scrollY || window.pageYOffset
+        }
+      `) as { viewportHeight: number; documentHeight: number; scrollY: number };
 
-      const currentHeight = (await this.driver.executeScript(
-        'return document.body.scrollHeight'
-      )) as number;
+      const { viewportHeight, documentHeight, scrollY } = dimensions;
 
-      if (currentHeight === fullHeight) {
+      // 현재 높이가 이전과 같은 경우
+      if (documentHeight === lastHeight) {
+        noChangeCount++;
+        // 여러 번 연속으로 높이 변화가 없으면 스크롤 종료
+        if (noChangeCount >= maxNoChange) {
+          break;
+        }
+      } else {
+        // 높이가 변했으면 카운터 리셋
+        noChangeCount = 0;
+        lastHeight = documentHeight;
+      }
+
+      // 다음 스크롤 위치 계산 (현재 위치 + scrollStep, 최대 문서 높이 제한)
+      const nextScroll = Math.min(scrollY + scrollStep, documentHeight - viewportHeight);
+
+      // 현재 위치가 이미 문서 끝이면 종료
+      if (scrollY >= documentHeight - viewportHeight) {
         break;
       }
-      fullHeight = currentHeight;
+
+      // 스크롤 실행
+      await this.driver.executeScript(`window.scrollTo(0, ${nextScroll})`);
+
+      // 스크롤 후 대기 (동적 컨텐츠 로딩을 위한 시간)
+      await this.driver.sleep(1000);
+
+      // 추가 컨텐츠 로딩 대기
+      await this.driver.wait(async () => {
+        const newHeight = await this.driver.executeScript(`
+          return Math.max(
+            document.documentElement.scrollHeight,
+            document.body.scrollHeight,
+            document.documentElement.offsetHeight,
+            document.body.offsetHeight
+          )
+        `) as number;
+        return newHeight >= documentHeight;
+      }, 2000).catch(() => { }); // 타임아웃 무시
     }
 
-    return { width: fullWidth, height: fullHeight };
+    // 마지막으로 전체 크기 확인
+    const finalDimensions = await this.driver.executeScript(`
+      return {
+        width: Math.max(
+          document.documentElement.scrollWidth,
+          document.body.scrollWidth,
+          document.documentElement.offsetWidth,
+          document.body.offsetWidth
+        ),
+        height: Math.max(
+          document.documentElement.scrollHeight,
+          document.body.scrollHeight,
+          document.documentElement.offsetHeight,
+          document.body.offsetHeight
+        )
+      }
+    `) as { width: number; height: number };
+
+    return finalDimensions;
   }
 
   async _getFullScreenshot() {

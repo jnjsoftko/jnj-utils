@@ -1,50 +1,54 @@
 import {
+  sleepAsync,
   Cheerio,
   Chrome,
   getProfileByEmail,
 } from '../index.js';
+import { By, until } from 'selenium-webdriver';
 
 import dotenv from 'dotenv';
 dotenv.config({ path: `../../.env` });
 
 const { GOOGLE_EMAIL, CHROME_USER_DATA_DIR, CHROME_PROFILE_NAME, TEST_DATA_DIR } = process.env;
 
-const str = `
-<html>
-<div>
-<div>
-div1
-</div>
-</div>
-</html>
-`
+console.log(GOOGLE_EMAIL, CHROME_USER_DATA_DIR);
 
-const ci = new Cheerio(str);
-console.log(ci.value('div > div'));
+// const str = `
+// <html>
+// <div>
+// <div>
+// div1
+// </div>
+// </div>
+// </html>
+// `
 
-const profile = getProfileByEmail(GOOGLE_EMAIL, CHROME_USER_DATA_DIR)
-console.log(profile)
+// const ci = new Cheerio(str);
+// console.log(ci.value('div > div'));
 
-const chrome = new Chrome(
-  {
-    headless: false,
-    email: GOOGLE_EMAIL,
-    // profileName: CHROME_PROFILE_NAME,
-    userDataDir: CHROME_USER_DATA_DIR,
-  }
-);
-chrome.goto("https://www.google.com")
-chrome.saveScreenshot(`${TEST_DATA_DIR}/downloads/images/screenshot01.png`)
+// const profile = getProfileByEmail(GOOGLE_EMAIL, CHROME_USER_DATA_DIR)
+// console.log(profile)
+
+// const chrome = new Chrome(
+//   {
+//     headless: false,
+//     email: GOOGLE_EMAIL,
+//     // profileName: CHROME_PROFILE_NAME,
+//     userDataDir: CHROME_USER_DATA_DIR,
+//   }
+// );
+// chrome.goto("https://www.google.com")
+// chrome.saveScreenshot(`${TEST_DATA_DIR}/downloads/images/screenshot01.png`)
 
 // export default Chrome;
 // module.exports = Chrome;
 
-// const profile = await getProfileByEmail('blackwhitekmc@gmail.com');
+// const profile = await getProfileByEmail(GOOGLE_EMAIL);
 // console.log(profile);
 
 // const ch = new Chrome({
 //     headless: true,
-//     email: 'blackwhitekmc@gmail.com'
+//     email: GOOGLE_EMAIL
 // });
 
 // await ch.goto('https://www.scrapingcourse.com/infinite-scrolling');
@@ -64,3 +68,20 @@ chrome.saveScreenshot(`${TEST_DATA_DIR}/downloads/images/screenshot01.png`)
 // let inputField = await driver.findElement(By.name('no_type'));
 // let value = await inputField.getAttribute('value');
 // console.log(value);
+
+const url = 'https://class101.net/ko/my-classes';
+
+const chrome = new Chrome({
+  headless: false,
+  email: GOOGLE_EMAIL,
+  userDataDir: CHROME_USER_DATA_DIR,
+});
+
+await chrome.goto(url);
+await chrome.getFullSize();
+await sleepAsync(2000);
+await chrome.driver.wait(until.elementLocated(By.css('ul[data-testid="grid-list"] > li')), 3000);
+const elements = await chrome.findElements('ul[data-testid="grid-list"] > li');
+const count = elements.length;
+console.log(count);
+
