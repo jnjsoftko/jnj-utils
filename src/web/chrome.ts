@@ -4,7 +4,7 @@ import { loadJson, findFolders, saveFile } from '../base/index.js';
 
 // 프로필 찾기
 const getProfileByEmail = (
-  email = 'bigwhitekmc@gmail.com',
+  email = '',
   userDataDir = ''
 ) => {
   if (!userDataDir) {
@@ -24,7 +24,7 @@ const getProfileByEmail = (
 };
 
 class Chrome {
-  private driver: WebDriver;
+  public driver: WebDriver;
 
   constructor(
     options: {
@@ -34,7 +34,7 @@ class Chrome {
       userDataDir?: string;
       arguments?: string[];
     } = { headless: false, profileName: '', email: '', userDataDir: '', arguments: [] }
-  )  {
+  ) {
     const chromeOptions = new chrome.Options();
 
     // 기본 옵션 설정
@@ -131,7 +131,7 @@ class Chrome {
   async saveScreenshot(path: string) {
     try {
       const image = await this._getFullScreenshot();
-      saveFile(path, image, {encoding: 'base64'});
+      saveFile(path, image, { encoding: 'base64' });
     } finally {
       this.close();
     }
@@ -269,43 +269,16 @@ class Chrome {
   async _saveElementScreenshot(by: string, value: string, path: string) {
     const element = await this._findElement(by, value);
     const image = await element.takeScreenshot();
-    saveFile(path, image, {encoding: 'base64'})
+    saveFile(path, image, { encoding: 'base64' })
   }
 
   // 특정 요소의 스크린샷 저장
   async saveElementScreenshot(value: string, path: string) {
     const element = await this.findElement(value);
     const image = await element.takeScreenshot();
-    saveFile(path, image, {encoding: 'base64'})
+    saveFile(path, image, { encoding: 'base64' })
   }
 }
 
 export { Chrome, getProfileByEmail };
-// export default Chrome;
-// module.exports = Chrome;
 
-// const profile = await getProfileByEmail('bigwhitekmc@gmail.com');
-// console.log(profile);
-
-// const ch = new Chrome({
-//     headless: true,
-//     email: 'bigwhitekmc@gmail.com'
-// });
-
-// await ch.goto('https://www.scrapingcourse.com/infinite-scrolling');
-// const image = await ch.getFullScreenshot();
-// fs.writeFileSync('./screenshot.png', image, 'base64');
-
-// * selenium get source, find element
-
-// driver.page_source
-
-// element_Source = driver.find_element("id","entry_213259").get_attribute("outerHTML")
-// print(element_Source)
-
-// selenium click, get text, get attribute, get screenshot, save screenshot
-// await submitButton.click();
-
-// let inputField = await driver.findElement(By.name('no_type'));
-// let value = await inputField.getAttribute('value');
-// console.log(value);
