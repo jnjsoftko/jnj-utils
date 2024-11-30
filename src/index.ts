@@ -45,7 +45,8 @@ export {
   findFiles, // 파일 목록
   findFolders, // 하위 folder 목록
   existsFolder, // 폴더 존재여부
-  // exist, // 파일 존재여부
+  existsFile, // 파일 존재여부
+  exists, // 경로 존재여부
   moveFile,
   moveFiles,
   // * cli
@@ -72,11 +73,11 @@ export {
   loadCsv, saveCsv, loadYaml, saveYaml, loadIni, saveIni
 } from './doc/index.js';
 
-export { 
-  GoogleAuth, 
-  GoogleSheets, 
-  GoogleScript, 
-  Youtube, 
-  GoogleGemini, 
-  GoogleCalendar 
+export {
+  GoogleAuth,
+  GoogleSheets,
+  GoogleScript,
+  Youtube,
+  GoogleGemini,
+  GoogleCalendar
 } from './google/index.js';
