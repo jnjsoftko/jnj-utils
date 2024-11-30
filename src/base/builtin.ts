@@ -100,8 +100,16 @@ const saveFile = (
  * @remarks
  * # TODO : add `append` func
  */
-const saveJson = (path: string, data = {}, indent = 2) => {
-  saveFile(setPath(path), JSON.stringify(data, null, indent));
+const saveJson = (path: string, data = {}, {
+  indent = 2,
+  overwrite = true,
+  newFile = false
+}: {
+  indent?: number,
+  overwrite?: boolean,
+  newFile?: boolean
+} = {}) => {
+  saveFile(setPath(path), JSON.stringify(data, null, indent), { overwrite, newFile });
 };
 
 /**
@@ -176,7 +184,12 @@ const existsFolder = (folder: string) => fs.existsSync(folder);
 /**
  * exists Folder(폴더 존재여부)
  */
-const exist = (path: string) => fs.existsSync(path);
+const existsFile = (file: string) => fs.existsSync(file);
+
+/**
+ * exists Folder(폴더 존재여부)
+ */
+const exists = (path: string) => fs.existsSync(path);
 
 /**
  * moveFile
@@ -256,7 +269,8 @@ export {
   findFiles, // 파일 목록
   findFolders, // 하위 folder 목록
   existsFolder, // 폴더 존재여부
-  exist, // 파일 존재여부
+  existsFile, // 파일 존재여부
+  exists, // 존재여부
   moveFile,
   moveFiles,
 };

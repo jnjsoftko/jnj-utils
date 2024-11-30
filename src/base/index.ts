@@ -47,6 +47,8 @@ export {
   findFiles, // 파일 목록
   findFolders, // 하위 폴더 목록
   existsFolder, // 폴더 존재여부
+  existsFile, // 파일 존재여부
+  exists, // 존재여부
   moveFile,
   moveFiles,
 } from './builtin.js';
