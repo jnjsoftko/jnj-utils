@@ -67,6 +67,9 @@ export {
 } from './web/index.js';
 
 export {
+  loadCsv, saveCsv,
+  loadYaml, saveYaml,
+  loadIni, saveIni,
   tsvFromSrt, // Convert SubRipText(`srt`) format string => Tab-Separated Values(`tsv`) format string
   srtFromTsv, // Convert Tab-Separated Values(`tsv`) => SubRipText(`srt`)
   convertStr, // convert string format
