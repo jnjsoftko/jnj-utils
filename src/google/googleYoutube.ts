@@ -304,4 +304,34 @@ export class Youtube {
       return null;
     }
   }
+
+  // 내 채널의 관련 플레이 리스트  { likes: 'LL', uploads: 'UUGKts6AP1HFBqcAo4r6GHTg' }
+  async getRelatedPlaylists() {
+    const response = await this.service.channels.list({
+      part: 'contentDetails',
+      mine: true,
+    });
+
+    return response.data.items[0].contentDetails.relatedPlaylists;
+  };
+
+  // "LL": 좋아요 표시한 동영상 가져오기
+  async myPlaylistItems(playlistId = 'LL') {
+    const playlistItems = [];
+    let nextPageToken;
+
+    do {
+      const response: any = await this.service.playlistItems.list({
+        part: 'snippet,contentDetails',
+        playlistId: playlistId,
+        maxResults: 50,
+        pageToken: nextPageToken || undefined,
+      });
+
+      playlistItems.push(...response.data.items);
+      nextPageToken = response.data.nextPageToken || undefined;
+    } while (nextPageToken);
+
+    return playlistItems;
+  };
 }

@@ -36,6 +36,34 @@ const setPath = (path: string) => {
 };
 
 /**
+ * 한글 조합형 -> 완성형
+ */
+const composeHangul = (str: string) => {
+  return str.normalize('NFKC');
+};
+
+/**
+ * 파일/폴더명으로 사용할 수 없는 문자 제거
+ */
+const sanitizePath = (str: string) => {
+  if (!str) return '';
+  str = composeHangul(str);
+
+  // 윈도우에서 파일/폴더명으로 사용할 수 없는 문자 제거
+  const invalidChars = /[<>:"/\\|?*\x00-\x1F]/g;
+  // 마침표(.)로 시작하거나 끝나는 경우 제거
+  const invalidDots = /(^\.+|\.+$)/g;
+  // 연속된 공백을 하나의 공백으로 변환
+  const multipleSpaces = /\s+/g;
+
+  return str
+    .replace(invalidChars, '') // 사용할 수 없는 문자 제거
+    .replace(invalidDots, '') // 시작/끝 마침표 제거
+    .replace(multipleSpaces, ' ') // 연속된 공백을 하나로
+    .trim(); // 앞뒤 공백 제거
+};
+
+/**
  * Load data(string) from file with charset(encoding)
  */
 const loadFile = (path: string, encoding: BufferEncoding = 'utf8') => {

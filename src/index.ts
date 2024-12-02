@@ -5,11 +5,8 @@ export {
   evalStr, // Evaluate String including `${expression}`
   includesMulti, // Check Includes at Multiple String(array)
   strFromAny, // String From Any Data
-  tsvFromSrt, // Convert SubRipText(`srt`) format string => Tab-Separated Values(`tsv`) format string
-  srtFromTsv, // Convert Tab-Separated Values(`tsv`) => SubRipText(`srt`)
   rowsFromCsv, // Convert Comma-Separated Values(`csv`) => Array of Array(`rows`)
   csvFromRows, // rows -> csv
-  convertStr, // convert string format
   // ? arr, rows, duo, duos, dict, dicts
   newKeys, // New Dict Keys(maps의 key들에 대해, 변경된 key 이름으로 dict 생성)
   renameKeys, // Rename Dict Keys(obj의 key들에 대한 이름 변경(변경 되지 않은 것은 유지))
@@ -70,7 +67,13 @@ export {
 } from './web/index.js';
 
 export {
-  loadCsv, saveCsv, loadYaml, saveYaml, loadIni, saveIni
+  tsvFromSrt, // Convert SubRipText(`srt`) format string => Tab-Separated Values(`tsv`) format string
+  srtFromTsv, // Convert Tab-Separated Values(`tsv`) => SubRipText(`srt`)
+  convertStr, // convert string format
+  srtToVtt, 
+  vttToSrt, 
+  convertSrtFileToVtt, 
+  convertSrtToVttInFolder 
 } from './doc/index.js';
 
 export {

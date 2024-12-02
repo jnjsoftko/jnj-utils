@@ -100,22 +100,7 @@ const includesMulti = (s: string, arr: string[]) => {
 const strFromAny = (s: any) =>
   typeof s == 'string' ? s.trim() : JSON.stringify(s);
 
-/**
- * Convert SubRipText(`srt`) format string => Tab-Separated Values(`tsv`) format string
- */
-const tsvFromSrt = (str: string) => {
-  return `\n${str}`
-    .replace(/\r\n/g, '\n')
-    .replace(/\n(\d+)\n+/g, '$1\t')
-    .replace(/\n([^\d])/g, '\t$1');
-};
 
-/**
- * Convert Tab-Separated Values(`tsv`) => SubRipText(`srt`)
- */
-const srtFromTsv = (str: string) => {
-  return str.replace(/\r\n/g, '\n').replace(/\n/g, '\n\n').replace(/\t/g, '\n');
-};
 
 /**
  * Convert Comma-Separated Values(`csv`) => Array of Array(`rows`)
@@ -176,20 +161,6 @@ const csvFromRows = (rows: any, sep = ',', hasQuote = true, newline = '\n') => {
     }
   }
   return str;
-};
-
-/**
- * Main Converter
- * @remarks
- * format coverter(string, arrays, dicts)
- */
-const convertStr = (data: string, srcType: string, dstType: string) => {
-  // return tsvFromSrt(data);
-  if (srcType == 'srt' && dstType == 'tsv') {
-    return tsvFromSrt(data);
-  } else if (srcType == 'tsv' && dstType == 'srt') {
-    return srtFromTsv(data);
-  }
 };
 
 // * Arr, Arrs, Rows, Duo, Duos, Dict, Dicts
@@ -765,11 +736,8 @@ export {
   evalStr, // Evaluate String including `${expression}`
   includesMulti, // Check Includes at Multiple String(array)
   strFromAny, // String From Any Data
-  tsvFromSrt, // Convert SubRipText(`srt`) format string => Tab-Separated Values(`tsv`) format string
-  srtFromTsv, // Convert Tab-Separated Values(`tsv`) => SubRipText(`srt`)
   rowsFromCsv, // Convert Comma-Separated Values(`csv`) => Array of Array(`rows`)
   csvFromRows, // rows -> csv
-  convertStr, // convert string format
   // ? arr, rows, duo, duos, dict, dicts
   newKeys, // New Dict Keys(maps의 key들에 대해, 변경된 key 이름으로 dict 생성)
   renameKeys, // Rename Dict Keys(obj의 key들에 대한 이름 변경(변경 되지 않은 것은 유지))
