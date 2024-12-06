@@ -10,3 +10,6 @@ export {
   chatGpt
 } from './chatgpt.js';
 
+export {
+  chatGemini
+} from './gemini.js';

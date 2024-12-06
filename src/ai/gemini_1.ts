@@ -40,14 +40,30 @@ const chatGemini = async (
   const genAI = new GoogleGenerativeAI(api_key);
   const gemini = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig });
 
-  try {
-    const result = await gemini.generateContent(message);
-    const response = await result.response;
-    return response.text();
-  } catch (error) {
-    console.error('Gemini API Error:', error);
-    throw error;
+  let fullResponse = '';
+  let continueGenerating = true;
+  let currentMessage = message;
+
+  while (continueGenerating) {
+    const result = await gemini.generateContentStream(currentMessage);
+    let chunkResponse = '';
+
+    for await (const chunk of result.stream) {
+      const chunkText = chunk.text();
+      chunkResponse += chunkText;
+    }
+
+    fullResponse += chunkResponse;
+
+    // Check if the response is complete or needs continuation
+    if (chunkResponse.endsWith('...')) { // Example condition to check if continuation is needed
+      currentMessage = 'continue'; // Adjust this based on how the API expects continuation prompts
+    } else {
+      continueGenerating = false;
+    }
   }
+
+  return fullResponse;
 }
 
 export {

@@ -55,8 +55,8 @@ const getAllResponses = async (slug: string, params: Record<string, any>={}, key
 // https://youtube.googleapis.com/youtube/v3/videos?part=contentDetails,id,liveStreamingDetails,localizations,player, recordingDetails,snippet,statistics,status,topicDetails&id=qQPxP9TZEO8,D4nZW4wk3gQ&key=AIzaSyBHsLKBGbPRGi11o2m7i7e_TZU3efYsWag
 const videosFromVideoIds = async (
   videoIds: string[],
+  key: string='',
   part = 'contentDetails,id,liveStreamingDetails,localizations,player,recordingDetails,snippet,statistics,status,topicDetails',
-  key: string=''
 ) => {
   const videos = [];
   for (const id of videoIds) {

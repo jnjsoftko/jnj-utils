@@ -22,7 +22,7 @@ const chatGpt = async (
   {
     model = 'gpt-4-1106-preview',
     system = 'Be precise and concise.',
-    max_tokens = 1000,
+    max_tokens = 4096,
     temperature = 0.2,
     top_p = 0.9,
     frequency_penalty = 1,

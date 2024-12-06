@@ -9,9 +9,12 @@ import {
   downloadYoutubeSubtitles,
   downloadYoutubeVideo,
   downloadYoutubeAll,
+  downloadYoutubePlaylist
 } from '../youtube/down.js';
 
 const { YOUTUBE_API_URL, YOUTUBE_API_KEY } = process.env;
+
+const DOWNLOAD_DIR = 'C:/JnJ-soft/Projects/internal/@jnjsoft/jnj-utils/_playground';
 
 // // # rest.ts
 // const playlists = await getAllResponses('playlists', { part: 'snippet', channelId: 'UCJIlfUISLIj9DODAQJWGHfA', maxResults: 25 }, YOUTUBE_API_KEY);
@@ -19,14 +22,21 @@ const { YOUTUBE_API_URL, YOUTUBE_API_KEY } = process.env;
 
 // # down.ts
 
-
-
-// const videoId = 'fFIlEGnziMg';
-const videoIds = 'zgGSy0seeYc';
-await downloadYoutubeSubtitles(videoIds);
+// // const videoId = 'fFIlEGnziMg';
+// const videoIds = 'zgGSy0seeYc';
+// await downloadYoutubeSubtitles(videoIds);
 // await downloadYoutubeVideo(videoIds);
-// const response = await downloadYoutubeAll(videoIds, {});
+// const response = await downloadYoutubeAll(videoIds, {outputDir: DOWNLOAD_DIR});
 // console.table(response);
+
+
+// ComfyUI 완벽 가이드 PLdWJCXJ7ciCCNbybpTPLq8RdDUSXPjI10
+// ComfyUI PLm2Af8-oBC3bpTOhzMybBGPJi5dROyHj_
+await downloadYoutubePlaylist('PLm2Af8-oBC3bpTOhzMybBGPJi5dROyHj_', {outputDir: DOWNLOAD_DIR, resolution: '1080', downType: 'VSI', key: YOUTUBE_API_KEY});
+
+// await downloadYoutubeAll('Ot7UtZOZBNo', {outputDir: `${DOWNLOAD_DIR}/videos`, resolution: '1080', downType: 'VSI', key: YOUTUBE_API_KEY});
+
+
 
 // // const playlistId = 'PLa67URrD8G_iSqfCFlw0683wH0TPFV5ys';
 // // const playlistId = 'PL8vH7pXTpMi1byn3s2yj2vNw1gV4Qse1l';

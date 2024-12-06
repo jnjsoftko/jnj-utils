@@ -13,6 +13,45 @@ const tsvFromSrt = (str: string) => {
 };
 
 /**
+ * Convert SubRipText(`srt`) format string => TXT format string
+ */
+const txtFromSrt = (str: string) => {
+  return `\n${str}`
+    .replace(/\r\n/g, '\n')  // CRLF -> LF 변환
+    .replace(/^\s*\d+\s*$/gm, '')  // 자막 번호 제거
+    // .replace(/\d{2}:\d{2}:\d{2},\d{3}\s*-->\s*\d{2}:\d{2}:\d{2},\d{3}/g, '')  // 타임스탬프 제거
+    .replace(/\d.+\-\->\s*\d.+/g, '')  // 타임스탬프 제거
+    .replace(/^\s*$/gm, '')  // 빈 줄 제거
+    .replace(/\n{2,}/g, '\n')  // 연속된 줄바꿈을 하나로
+    .trim();  // 앞뒤 공백 제거
+};
+
+
+/**
+ * Convert SubRipText(`srt`) format string => Tab-Separated Values(`tsv`) format string
+ */
+const tsvFromVtt = (str: string) => {
+  return `\n${str}`
+    .replace(/\r\n/g, '\n')
+    .replace(/WEBVTT\n/g, '')
+    .replace(/\n(\d+)\n+/g, '$1\t')
+    .replace(/\n([^\d])/g, '\t$1');
+};
+
+/**
+ * Convert SubRipText(`srt`) format string => Tab-Separated Values(`tsv`) format string
+ */
+const txtFromVtt = (str: string) => {
+  return `\n${str}`
+    .replace(/\r\n/g, '\n')  // CRLF -> LF 변환
+    .replace(/WEBVTT\n/g, '')
+    .replace(/\d.+\-\->\s*\d.+/g, '')  // 타임스탬프 제거
+    .replace(/^\s*$/gm, '')  // 빈 줄 제거
+    .replace(/\n{2,}/g, '\n')  // 연속된 줄바꿈을 하나로
+    .trim();  // 앞뒤 공백 제거
+};
+
+/**
  * Convert Tab-Separated Values(`tsv`) => SubRipText(`srt`)
  */
 const srtFromTsv = (str: string) => {
@@ -128,7 +167,10 @@ const convertSrtToVttInFolder = (srtDir: string, vttDir: string) => {
 
 export {
   tsvFromSrt, // Convert SubRipText(`srt`) format string => Tab-Separated Values(`tsv`) format string
+  txtFromSrt, // Convert SubRipText(`srt`) format string => Text(`txt`) format string
   srtFromTsv, // Convert Tab-Separated Values(`tsv`) => SubRipText(`srt`)
+  tsvFromVtt, // Convert WebVTT(`vtt`) format string => Tab-Separated Values(`tsv`) format string
+  txtFromVtt, // Convert WebVTT(`vtt`) format string => Text(`txt`) format string
   convertStr, // convert string format
   srtToVtt, 
   vttToSrt, 

@@ -72,6 +72,9 @@ export {
   loadIni, saveIni,
   tsvFromSrt, // Convert SubRipText(`srt`) format string => Tab-Separated Values(`tsv`) format string
   srtFromTsv, // Convert Tab-Separated Values(`tsv`) => SubRipText(`srt`)
+  txtFromSrt, // Convert SubRipText(`srt`) format string => Text(`txt`) format string
+  tsvFromVtt, // Convert Timed Text Markup Language(`vtt`) format string => Tab-Separated Values(`tsv`) format string
+  txtFromVtt, // Convert Timed Text Markup Language(`vtt`) format string => Text(`txt`) format string
   convertStr, // convert string format
   srtToVtt, 
   vttToSrt, 
@@ -87,3 +90,13 @@ export {
   GoogleGemini,
   GoogleCalendar
 } from './google/index.js';
+
+export {
+  watchLaterVideoIds,
+  historyVideoIds,
+  shortsVideoIdsByChannelId,
+  downloadYoutubeSubtitles,
+  downloadYoutubeVideo,
+  downloadYoutubeAll,
+  downloadYoutubePlaylist
+} from './youtube/index.js';

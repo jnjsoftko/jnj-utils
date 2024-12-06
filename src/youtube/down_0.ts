@@ -4,8 +4,7 @@ import cp from 'child_process';
 
 import youtubeSubtitlesScraper from 'youtube-captions-scraper';
 
-import { getAllResponses, getResponse, videosFromVideoIds } from './rest.js';
-import { makeDir, saveJson } from '../base/index.js';
+import { getAllResponses, getVideoTitle, getPlaylistTitle } from './rest.js';
 
 // * download
 const srtFromSubtitles = (Subtitles: any[]) => {
@@ -88,7 +87,7 @@ const _downloadYoutubeSubtitles = (captions: any[], formatType = 'vtt') => {
 };
 
 const downloadYoutubeSubtitles = async (videoId: string, {
-  languages = 'ko,en',
+  languages = 'en,ko',
   formatType = 'vtt',
   outputDir = '.',
 }= {}) => {
@@ -114,7 +113,7 @@ const downloadYoutubeSubtitles = async (videoId: string, {
 };
 
 const downloadYoutubeVideo = async (videoId: string, {
-  resolution = '1080',
+  resolution = '720',
   bitrate = '128',
   outputDir = '.',
 } = {}) => {
@@ -135,13 +134,11 @@ interface DownloadItem {
 }
 
 const downloadYoutubeAll = async (videoIds: string, {
-  resolution = '1080',
+  resolution = '720',
   bitrate = '128',
-  languages = 'ko,en',
+  languages = 'en,ko',
   formatType = 'vtt',
   outputDir = '.',
-  downType = 'VSI',  // V: video, S: subtitles, I: info
-  key = '',   // GOOGLE API KEY
 }) => {
   const downloaded: {
     resolution: string;
@@ -158,38 +155,25 @@ const downloadYoutubeAll = async (videoIds: string, {
     outputDir,
     downs: [],
   };
-
-  makeDir(outputDir);
-
   for (const videoId of videoIds.split(',')) {
     const down: { subtitles?: string; video?: string } = {};
     try {
-      if (downType.includes('S')) {
-        const subtitles = await downloadYoutubeSubtitles(videoId,{
-          languages,
-          formatType,
-          outputDir,
-        });
-        if (subtitles) {
-          down.subtitles = subtitles.map((s) => s.split('/').pop()).join('|');
-        }
+      const subtitles = await downloadYoutubeSubtitles(videoId,{
+        languages,
+        formatType,
+        outputDir,
+      });
+      if (subtitles) {
+        down.subtitles = subtitles.map((s) => s.split('/').pop()).join('|');
       }
-      if (downType.includes('V')) {
-        const video = await downloadYoutubeVideo(videoId, {
-          resolution,
-          bitrate,
-          outputDir,
-        });
-        if (video) {
-          down.video = video.split('/').pop();
-          downloaded.downs.push(down);
-        }
-      }
-
-      if (downType.includes('I')) {
-        const info = await videosFromVideoIds([videoId], key);
-        console.log('info: ', info);
-        saveJson(`${outputDir}/${videoId}.json`, info);
+      const video = await downloadYoutubeVideo(videoId, {
+        resolution,
+        bitrate,
+        outputDir,
+      });
+      if (video) {
+        down.video = video.split('/').pop();
+        downloaded.downs.push(down);
       }
     } catch (error: any) {
       console.error('An error occurred:', error instanceof Error ? error.message : String(error));
@@ -201,31 +185,21 @@ const downloadYoutubeAll = async (videoIds: string, {
 
 // downloadYoutubePlaylist 함수 수정
 const downloadYoutubePlaylist = async (playlistId: string, {
-  resolution = '1080',
+  resolution = '720',
   bitrate = '128',
-  languages = 'ko,en',
+  languages = 'en,ko',
   formatType = 'vtt',
   outputDir = '.',
-  downType = 'VSI',  // V: video, S: subtitles
-  key = '',   // GOOGLE API KEY
-  maxItems = Infinity  // 최대 다운로드 개수
-} = {}, ) => {
+} = {}) => {
+  const playlistTitle = await getPlaylistTitle(playlistId);
 
-  outputDir = `${outputDir}/${playlistId}`; // snippet.title  // snippet.channelTitle
-
-  const playlistInfo = await getResponse('playlists', {
-    part: 'snippet,contentDetails',
-    id: playlistId,
-  }, key);
-
-  saveJson(`${outputDir}/_info.json`, playlistInfo);
+  outputDir = `${outputDir}/${playlistTitle}_${playlistId}`; // snippet.title  // snippet.channelTitle
 
   const query = { part: 'contentDetails', playlistId };
-  // console.log('query: ', query);
 
   try {
-    const res = await getAllResponses('playlistItems', query, key, maxItems);
-    // console.log('res: ', res);
+    const res = await getAllResponses('playlistItems', query);
+    console.log('res: ', res);
     let videoIds = res.map((item) => item.contentDetails.videoId).join(',');
     // 중복 제거
     videoIds = [...new Set(videoIds.split(','))].join(',');
@@ -236,8 +210,6 @@ const downloadYoutubePlaylist = async (playlistId: string, {
       languages,
       formatType,
       outputDir,
-      downType,
-      key
     });
   } catch (error: unknown) {
     console.error('An error occurred:', error instanceof Error ? error.message : String(error));
