@@ -175,21 +175,31 @@ const downloadYoutubeAll = async (videoIds: string, {
         }
       }
       if (downType.includes('V')) {
-        const video = await downloadYoutubeVideo(videoId, {
-          resolution,
-          bitrate,
-          outputDir,
-        });
-        if (video) {
-          down.video = video.split('/').pop();
-          downloaded.downs.push(down);
+        try {
+          const video = await downloadYoutubeVideo(videoId, {
+            resolution,
+            bitrate,
+            outputDir,
+          });
+          if (video) {
+            down.video = video.split('/').pop();
+            downloaded.downs.push(down);
+          }
+        } catch (error: any) {
+          console.error('An error occurred:', error instanceof Error ? error.message : String(error));
+          continue;
         }
       }
 
       if (downType.includes('I')) {
-        const info = await videosFromVideoIds([videoId], key);
-        console.log('info: ', info);
-        saveJson(`${outputDir}/${videoId}.json`, info);
+        try {
+          const info = await videosFromVideoIds([videoId], key);
+          console.log('info: ', info);
+          saveJson(`${outputDir}/${videoId}.json`, info);
+        } catch (error: any) {
+          console.error('An error occurred:', error instanceof Error ? error.message : String(error));
+          continue;
+        }
       }
     } catch (error: any) {
       console.error('An error occurred:', error instanceof Error ? error.message : String(error));

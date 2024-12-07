@@ -32,7 +32,10 @@ const DOWNLOAD_DIR = 'C:/JnJ-soft/Projects/internal/@jnjsoft/jnj-utils/_playgrou
 
 // ComfyUI 완벽 가이드 PLdWJCXJ7ciCCNbybpTPLq8RdDUSXPjI10
 // ComfyUI PLm2Af8-oBC3bpTOhzMybBGPJi5dROyHj_
-await downloadYoutubePlaylist('PLm2Af8-oBC3bpTOhzMybBGPJi5dROyHj_', {outputDir: DOWNLOAD_DIR, resolution: '1080', downType: 'VSI', key: YOUTUBE_API_KEY});
+// n8n PLOI8xpLfBsbvljNN-Dy37vBvZA33aa_6W
+// n8n PLmV998swMNJC59Y6jIuEL1E0lGaZZtz2x
+// No Code AI with n8n PLyrg3m7Ei-MrYaMyxC_vZ0x-OUdTQN6RS
+await downloadYoutubePlaylist('PLyrg3m7Ei-MrYaMyxC_vZ0x-OUdTQN6RS', {outputDir: DOWNLOAD_DIR, resolution: '1080', downType: 'VSI', key: YOUTUBE_API_KEY});
 
 // await downloadYoutubeAll('Ot7UtZOZBNo', {outputDir: `${DOWNLOAD_DIR}/videos`, resolution: '1080', downType: 'VSI', key: YOUTUBE_API_KEY});
 
