@@ -35,7 +35,7 @@ const DOWNLOAD_DIR = 'C:/JnJ-soft/Projects/internal/@jnjsoft/jnj-utils/_playgrou
 // n8n PLOI8xpLfBsbvljNN-Dy37vBvZA33aa_6W
 // n8n PLmV998swMNJC59Y6jIuEL1E0lGaZZtz2x
 // No Code AI with n8n PLyrg3m7Ei-MrYaMyxC_vZ0x-OUdTQN6RS
-await downloadYoutubePlaylist('PLyrg3m7Ei-MrYaMyxC_vZ0x-OUdTQN6RS', {outputDir: DOWNLOAD_DIR, resolution: '1080', downType: 'VSI', key: YOUTUBE_API_KEY});
+await downloadYoutubePlaylist('PLQ1Lyjz5jETvwZTdd7zZ8h1JJoi90rzjt', {outputDir: DOWNLOAD_DIR, resolution: '1080', downType: 'VSI', key: YOUTUBE_API_KEY});
 
 // await downloadYoutubeAll('Ot7UtZOZBNo', {outputDir: `${DOWNLOAD_DIR}/videos`, resolution: '1080', downType: 'VSI', key: YOUTUBE_API_KEY});
 
