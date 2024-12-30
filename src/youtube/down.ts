@@ -2,7 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import cp from 'child_process';
 
-import youtubeSubtitlesScraper from 'youtube-captions-scraper';
+// import youtubeSubtitlesScraper from 'youtube-captions-scraper';
+import { getSubtitles } from 'youtube-captions-scraper';
 
 import { getAllResponses, getResponse, videosFromVideoIds } from './rest.js';
 import { makeDir, saveJson } from '../base/index.js';
@@ -33,7 +34,7 @@ const _getSubtitles = async (videoId: string, languages: string) => {
   for (const language of languageArr) {
     console.log('language: ', language);
     try {
-      const captions = await youtubeSubtitlesScraper.getSubtitles({
+      const captions = await getSubtitles({
         videoID: videoId,
         lang: language,
       });
