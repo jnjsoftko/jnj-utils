@@ -9,3 +9,6 @@ export {
   downloadYoutubeAll,
   downloadYoutubePlaylist
 } from './down.js'
+export {
+  videosFromVideoIds
+} from './rest.js'

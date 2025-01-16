@@ -98,5 +98,6 @@ export {
   downloadYoutubeSubtitles,
   downloadYoutubeVideo,
   downloadYoutubeAll,
-  downloadYoutubePlaylist
+  downloadYoutubePlaylist,
+  videosFromVideoIds
 } from './youtube/index.js';
