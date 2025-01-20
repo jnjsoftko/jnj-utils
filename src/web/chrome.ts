@@ -1,6 +1,7 @@
-import { Builder, By, WebDriver } from 'selenium-webdriver';
+import { Builder, By, WebDriver, WebElement } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome.js';
-import { loadJson, findFolders, saveFile } from '../base/index.js';
+import { loadJson, findFolders, saveFile, sleepAsync } from '../base/index.js';
+import { until } from 'selenium-webdriver';
 
 // 프로필 찾기
 const getProfileByEmail = (
@@ -39,8 +40,9 @@ class Chrome {
 
     // 기본 옵션 설정
     if (options.headless) {
-      chromeOptions.addArguments('--headless');
+      chromeOptions.addArguments('--headless=new');  // 새로운 헤드리스 모드 사용
     }
+    
     const profileName =
       options.profileName ??
       getProfileByEmail(options.email, options.userDataDir) ??
@@ -52,12 +54,15 @@ class Chrome {
       chromeOptions.addArguments(`--profile-directory=${profileName}`);
     }
 
-    // 기본 인자
+    // 자동화 감지 우회를 위한 기본 인자
     const defaultArguments = [
       '--disable-gpu',
       '--no-sandbox',
       '--disable-dev-shm-usage',
-      '--remote-debugging-port=9222',
+      '--disable-blink-features=AutomationControlled',  // 자동화 감지 비활성화
+      '--disable-extensions',  // 확장 프로그램 비활성화
+      '--start-maximized',  // 창 최대화
+      '--window-size=1920,1080',  // 기본 창 크기 설정
     ];
 
     // 기본 인자와 사용자 지정 인자를 합치기
@@ -66,11 +71,27 @@ class Chrome {
     // 최종 인자 설정
     finalArguments.forEach((arg) => chromeOptions.addArguments(arg));
 
+    // 자동화 관련 설정 제거
+    chromeOptions.excludeSwitches('enable-automation');
+    chromeOptions.setUserPreferences({
+      'credentials_enable_service': false,
+      'profile.password_manager_enabled': false,
+      'excludeSwitches': ['enable-automation'],
+      'useAutomationExtension': false
+    });
+
     // 드라이버 초기화
     this.driver = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(chromeOptions)
       .build();
+
+    // CDP를 통한 추가 설정
+    this.driver.executeScript(`
+      Object.defineProperty(navigator, 'webdriver', {
+        get: () => undefined
+      });
+    `);
   }
 
   async getFullSize() {
@@ -281,8 +302,10 @@ class Chrome {
   }
 
   // 요소 클릭
-  async click(value: string) {
-    const element = await this.findElement(value);
+  async click(selector: string) {
+    const element = await this.findElement(selector);
+    await this.scrollIntoView(element);
+    await sleepAsync(1000);
     await element.click();
   }
 
@@ -334,6 +357,18 @@ class Chrome {
     const element = await this.findElement(value);
     const image = await element.takeScreenshot();
     saveFile(path, image, { encoding: 'base64' })
+  }
+
+  async executeScript(script: string, ...args: any[]) {
+    return this.driver.executeScript(script, ...args);
+  }
+
+  async waitForElementToBeClickable(selector: string, timeout: number = 10000) {
+    return this.driver.wait(until.elementIsEnabled(await this.findElement(selector)), timeout);
+  }
+
+  async scrollIntoView(element: WebElement) {
+    await this.executeScript("arguments[0].scrollIntoView(true);", element);
   }
 }
 
