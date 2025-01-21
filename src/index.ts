@@ -33,6 +33,7 @@ export {
   // * builtin
   slashedFolder, //
   setPath, // 상대경로->절대경로(실행 폴더 기준) './dir1/dir2' =>
+  sanitizeName, // 파일명으로 사용가능하도록 문자열 변경
   loadFile, //
   loadJson, //
   saveFile, //

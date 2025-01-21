@@ -39,6 +39,7 @@ export {
   loadJson, //
   saveFile, //
   saveJson, //
+  sanitizeName, // 파일명으로 사용가능하도록 문자열 변경
   makeDir, //
   copyDir, // 폴더 복사(recursive)
   findFiles, // 파일 목록
